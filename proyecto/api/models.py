@@ -1,4 +1,4 @@
-from django.db import models # type: ignore
+from django.db import models
 
 # Create your models here.
 
@@ -17,3 +17,36 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido {self.id} de {self.cliente.nombre}"
+
+class Producto(models.Model):
+    nombre = models.CharField(max_length=255, unique=True)
+    descripcion = models.TextField()
+    precio = models.IntegerField()
+    stock = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.nombre
+
+class Empleado(models.Model):
+    nombre = models.CharField(max_length=255)
+    cargo = models.CharField(max_length=255)
+    email = models.EmailField(unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+class MetodoPago(models.Model):
+    tipo = models.CharField(max_length=255)
+    descripcion = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.tipo
+
+class PedidoProducto(models.Model):
+    pedido = models.ForeignKey('Pedido', on_delete=models.CASCADE, related_name='productos')
+    producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
+    cantidad = models.PositiveIntegerField()
+    precio_unitario = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.pedido} - {self.producto}"
